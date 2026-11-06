@@ -1,0 +1,1485 @@
+/* ==========================================================================
+   Reel Verifier — Instagram-Inspired Design System
+   Minimalist, Mobile-First, Light & AMOLED Dark Modes
+   Modeled after Instagram Reels, Story Stickers, and Meta Web
+   ========================================================================== */
+
+:root {
+    /* Instagram Light Mode Palette */
+    --canvas: #ffffff;
+    --canvas-subtle: #fafafa;
+    --surface-card: #ffffff;
+    --surface-elevated: #ffffff;
+    --surface-hover: #f5f5f5;
+    --surface-overlay: rgba(0, 0, 0, 0.65);
+
+    --hairline: #dbdbdb;
+    --hairline-soft: #efefef;
+    --hairline-focus: #0095f6;
+
+    --text-primary: #262626;
+    --text-secondary: #737373;
+    --text-muted: #8e8e8e;
+    --text-inverse: #ffffff;
+
+    /* Signature Instagram Brand Colors */
+    --ig-blue: #0095f6;
+    --ig-blue-hover: #1877f2;
+    --ig-blue-subtle: rgba(0, 149, 246, 0.08);
+
+    --ig-gradient: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
+    --ig-gradient-story: linear-gradient(135deg, #fd1d1d, #e1306c, #c13584, #833ab4);
+    --ig-gradient-subtle: linear-gradient(135deg, rgba(225, 48, 108, 0.08), rgba(129, 52, 175, 0.08));
+
+    /* Instagram Verdict Sticker Colors */
+    --verdict-verified-bg: #e8f9ee;
+    --verdict-verified-text: #065f46;
+    --verdict-verified-border: #a7f3d0;
+    --verdict-verified-badge: #00ba88;
+    --verdict-verified-bar: #10b981;
+
+    --verdict-partial-bg: #fff9eb;
+    --verdict-partial-text: #92400e;
+    --verdict-partial-border: #fde68a;
+    --verdict-partial-badge: #f59e0b;
+    --verdict-partial-bar: #f59e0b;
+
+    --verdict-unverified-bg: #f5f5f5;
+    --verdict-unverified-text: #262626;
+    --verdict-unverified-border: #dbdbdb;
+    --verdict-unverified-badge: #737373;
+    --verdict-unverified-bar: #8e8e8e;
+
+    --verdict-suspicious-bg: #fef2f2;
+    --verdict-suspicious-text: #991b1b;
+    --verdict-suspicious-border: #fecaca;
+    --verdict-suspicious-badge: #ed4956;
+    --verdict-suspicious-bar: #ef4444;
+
+    /* Radii & Shadows */
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 9999px;
+
+    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-dropdown: 0 12px 24px rgba(0, 0, 0, 0.12);
+
+    /* Typography */
+    --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Instagram AMOLED Dark Palette */
+        --canvas: #000000;
+        --canvas-subtle: #121212;
+        --surface-card: #121212;
+        --surface-elevated: #1a1a1a;
+        --surface-hover: #262626;
+        --surface-overlay: rgba(0, 0, 0, 0.85);
+
+        --hairline: #262626;
+        --hairline-soft: #363636;
+        --hairline-focus: #0095f6;
+
+        --text-primary: #f5f5f5;
+        --text-secondary: #a8a8a8;
+        --text-muted: #737373;
+        --text-inverse: #000000;
+
+        --verdict-verified-bg: #072514;
+        --verdict-verified-text: #4ade80;
+        --verdict-verified-border: #059669;
+
+        --verdict-partial-bg: #2d1a03;
+        --verdict-partial-text: #fde68a;
+        --verdict-partial-border: #b45309;
+
+        --verdict-unverified-bg: #1a1a1a;
+        --verdict-unverified-text: #e5e5e5;
+        --verdict-unverified-border: #363636;
+
+        --verdict-suspicious-bg: #2b080c;
+        --verdict-suspicious-text: #fca5a5;
+        --verdict-suspicious-border: #dc2626;
+
+        --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ==========================================================================
+   CSS Reset & Base Rules
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-system);
+    background-color: var(--canvas-subtle);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+}
+
+a:hover {
+    opacity: 0.85;
+}
+
+:focus-visible {
+    outline: 2px solid var(--ig-blue);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Top Navigation Header (Instagram Desktop & Mobile Style)
+   ========================================================================== */
+
+.app-header {
+    background-color: var(--canvas);
+    border-bottom: 1px solid var(--hairline);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.header-container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+}
+
+.logo-reel-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    background: var(--ig-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(225, 48, 108, 0.3);
+}
+
+.logo-gradient-text {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--surface-hover);
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+}
+
+/* User Profile & Story Ring Avatar */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.story-avatar-wrapper {
+    width: 34px;
+    height: 34px;
+    padding: 2px;
+    border-radius: var(--radius-pill);
+    background: var(--ig-gradient-story);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+    background-color: var(--canvas);
+    border: 1.5px solid var(--canvas);
+}
+
+.user-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background-color: var(--canvas-subtle);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: 1.5px solid var(--canvas);
+}
+
+.user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+    .user-name {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Buttons (Instagram Clean Style)
+   ========================================================================== */
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background-color: var(--ig-blue);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.55rem 1.15rem;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-primary:hover {
+    background-color: var(--ig-blue-hover);
+    color: #ffffff;
+    opacity: 1;
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--hairline);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.55rem 1.15rem;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--surface-hover);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+}
+
+.btn-xs {
+    padding: 0.25rem 0.55rem;
+    font-size: 0.75rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-gradient {
+    background: var(--ig-gradient);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(225, 48, 108, 0.25);
+}
+
+.btn-gradient:hover {
+    opacity: 0.92;
+    color: #ffffff;
+}
+
+.btn-link {
+    color: var(--ig-blue);
+    font-weight: 600;
+    display: inline;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Layout & Cards
+   ========================================================================== */
+
+.main-content {
+    flex: 1;
+    max-width: 860px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-subtle);
+    padding: 1.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Flash notifications */
+.flash-messages-container {
+    max-width: 860px;
+    margin: 1rem auto 0 auto;
+    padding: 0 1rem;
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    border: 1px solid transparent;
+}
+
+.alert-error {
+    background-color: var(--verdict-suspicious-bg);
+    color: var(--verdict-suspicious-text);
+    border-color: var(--verdict-suspicious-border);
+}
+
+.alert-success {
+    background-color: var(--verdict-verified-bg);
+    color: var(--verdict-verified-text);
+    border-color: var(--verdict-verified-border);
+}
+
+.alert-close {
+    font-size: 1.25rem;
+    line-height: 1;
+    opacity: 0.7;
+    margin-left: 0.75rem;
+}
+
+/* ==========================================================================
+   Landing Page (Instagram Minimalist Hero & Reel Showcase)
+   ========================================================================== */
+
+.hero-section {
+    padding: 3rem 0 2rem 0;
+    text-align: center;
+}
+
+.hero-container {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.hero-story-ring {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 1.25rem auto;
+    padding: 3px;
+    border-radius: var(--radius-pill);
+    background: var(--ig-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(225, 48, 108, 0.35);
+}
+
+.hero-story-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background-color: var(--canvas);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+.hero-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 0.85rem;
+    font-family: var(--font-display);
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+/* Instagram-style Hero Email Input */
+.hero-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.hero-email-form {
+    width: 100%;
+    max-width: 440px;
+}
+
+.email-input-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    padding: 0.25rem;
+    transition: border-color 0.15s ease;
+    box-shadow: var(--shadow-subtle);
+}
+
+.email-input-group:focus-within {
+    border-color: var(--hairline-focus);
+}
+
+.hero-email-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    min-width: 0;
+}
+
+.hero-submit-btn {
+    flex-shrink: 0;
+}
+
+.cta-microcopy {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Instagram Features Section */
+.features-section, .usecases-section {
+    padding: 2.5rem 0;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    text-align: center;
+    letter-spacing: -0.01em;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.feature-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    transition: transform 0.15s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-2px);
+}
+
+.feature-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.feature-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.feature-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+/* Category Pills (Instagram Story Highlights style) */
+.pill-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.category-pill {
+    background-color: var(--surface-card);
+    border: 1px solid var(--hairline);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Verification / Upload Workspace (Instagram Create Post Style)
+   ========================================================================== */
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-display);
+}
+
+.page-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Dropzone — Instagram "Create New Post" modal look */
+.dropzone {
+    border: 1.5px dashed var(--hairline);
+    border-radius: var(--radius-lg);
+    background-color: var(--canvas);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    outline: none;
+}
+
+.dropzone:hover, .dropzone.dragover {
+    border-color: var(--ig-blue);
+    background-color: var(--ig-blue-subtle);
+}
+
+.dropzone:focus-visible {
+    border-color: var(--ig-blue);
+}
+
+.file-input-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dropzone-icon-camera {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1rem auto;
+    border-radius: var(--radius-md);
+    background: var(--surface-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: var(--text-primary);
+    border: 1px solid var(--hairline);
+}
+
+.dropzone-primary {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.dropzone-secondary {
+    display: block;
+    margin-bottom: 0.85rem;
+}
+
+.dropzone-limits {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Uploaded Media Previews (Reel/Photo Carousel) */
+.previews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.preview-item {
+    position: relative;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--canvas-subtle);
+    aspect-ratio: 9/16;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-video-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.preview-remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 22px;
+    height: 22px;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    border-radius: var(--radius-pill);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: background-color 0.15s ease;
+}
+
+.preview-remove-btn:hover {
+    background-color: var(--verdict-suspicious-badge);
+}
+
+.preview-meta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+    color: #ffffff;
+    padding: 0.25rem 0.4rem;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Caption Field (Instagram Post Editor Look) */
+.form-group {
+    margin-top: 1.25rem;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.label-optional {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.char-counter {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    background-color: var(--canvas);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    resize: vertical;
+    transition: border-color 0.15s ease;
+}
+
+.form-textarea:focus {
+    border-color: var(--hairline-focus);
+    outline: none;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+}
+
+.btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ==========================================================================
+   Loading State (Instagram Pulse)
+   ========================================================================== */
+
+.loading-card {
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.loading-spinner {
+    width: 44px;
+    height: 44px;
+    border: 3.5px solid var(--hairline);
+    border-top-color: var(--ig-blue);
+    border-radius: 50%;
+    margin: 0 auto 1.25rem auto;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.loading-subtext {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto 1.75rem auto;
+}
+
+.loading-steps {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.loading-step {
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: var(--surface-hover);
+    color: var(--text-muted);
+}
+
+.loading-step.active {
+    background-color: var(--ig-blue-subtle);
+    color: var(--ig-blue);
+    border: 1px solid var(--ig-blue);
+}
+
+/* ==========================================================================
+   Verification Report (Instagram Story Sticker & Post Verification)
+   ========================================================================== */
+
+.result-container {
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+}
+
+.badge-cached {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    background-color: var(--surface-hover);
+    color: var(--text-secondary);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-pill);
+}
+
+/* Instagram Story Sticker Verdict Banner */
+.verdict-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    border: 1px solid var(--hairline);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-subtle);
+}
+
+.verdict-badge-large {
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-pill);
+    letter-spacing: -0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Verdict Badges */
+.badge-verified {
+    background-color: var(--verdict-verified-bg);
+    color: var(--verdict-verified-text);
+    border: 1.5px solid var(--verdict-verified-border);
+}
+
+.badge-partial {
+    background-color: var(--verdict-partial-bg);
+    color: var(--verdict-partial-text);
+    border: 1.5px solid var(--verdict-partial-border);
+}
+
+.badge-unverified {
+    background-color: var(--verdict-unverified-bg);
+    color: var(--verdict-unverified-text);
+    border: 1.5px solid var(--verdict-unverified-border);
+}
+
+.badge-suspicious {
+    background-color: var(--verdict-suspicious-bg);
+    color: var(--verdict-suspicious-text);
+    border: 1.5px solid var(--verdict-suspicious-border);
+}
+
+.confidence-box {
+    flex: 1;
+    min-width: 220px;
+}
+
+.confidence-label-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.confidence-value {
+    color: var(--ig-blue);
+    font-family: var(--font-mono);
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background-color: var(--hairline);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    margin-bottom: 0.3rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--ig-blue);
+    border-radius: var(--radius-pill);
+    transition: width 0.5s ease;
+}
+
+.confidence-explanation {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: block;
+}
+
+.result-block {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--hairline-soft);
+}
+
+.result-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.block-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.summary-text {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Instagram Community Alert / Red Flags */
+.warning-block {
+    background-color: var(--verdict-suspicious-bg);
+    border: 1px solid var(--verdict-suspicious-border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+}
+
+.text-danger {
+    color: var(--verdict-suspicious-text);
+}
+
+.flags-list {
+    margin-left: 1.25rem;
+    color: var(--verdict-suspicious-text);
+    font-size: 0.875rem;
+}
+
+.flags-list li {
+    margin-bottom: 0.35rem;
+}
+
+.advice-block {
+    background-color: var(--ig-blue-subtle);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(0, 149, 246, 0.2);
+}
+
+.advice-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Official Links (Instagram Link Sticker Style) */
+.links-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.official-link-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    background-color: var(--canvas);
+    transition: all 0.15s ease;
+}
+
+.official-link-card:hover {
+    border-color: var(--ig-blue);
+    background-color: var(--surface-hover);
+}
+
+.link-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.link-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ig-blue);
+}
+
+.link-url {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    word-break: break-all;
+}
+
+.external-icon {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* Post Metadata Accordion */
+.claim-accordion {
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    background-color: var(--canvas-subtle);
+    overflow: hidden;
+}
+
+.accordion-header {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.accordion-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.claim-accordion[open] .accordion-arrow {
+    transform: rotate(180deg);
+}
+
+.claim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.85rem;
+    padding: 1rem;
+    background-color: var(--canvas);
+    border-top: 1px solid var(--hairline);
+}
+
+.claim-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+}
+
+.field-val {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.claim-subblock {
+    padding: 0.85rem 1rem;
+    background-color: var(--canvas);
+    border-top: 1px solid var(--hairline);
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+}
+
+.tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-xs);
+}
+
+.tag-warning {
+    background-color: var(--verdict-partial-bg);
+    color: var(--verdict-partial-text);
+    border: 1px solid var(--verdict-partial-border);
+}
+
+.result-footer-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   History & Feed Pages (Instagram Profile / Reels Grid)
+   ========================================================================== */
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.history-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.history-table th, .history-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--hairline);
+}
+
+.history-table th {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: var(--canvas-subtle);
+}
+
+.history-table tr:last-child td {
+    border-bottom: none;
+}
+
+.history-table tr:hover td {
+    background-color: var(--surface-hover);
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.category-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    background-color: var(--surface-hover);
+    border-radius: var(--radius-xs);
+    color: var(--text-secondary);
+}
+
+.history-conf-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.mini-bar-track {
+    width: 50px;
+    height: 5px;
+    background-color: var(--hairline);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.mini-bar-fill {
+    height: 100%;
+    background-color: var(--ig-blue);
+}
+
+.conf-text {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-nowrap {
+    white-space: nowrap;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.empty-state-card {
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+}
+
+.empty-state-icon {
+    font-size: 2.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.empty-state-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+}
+
+.result-page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.back-link {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--ig-blue);
+}
+
+.report-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Sign-in Page (Instagram Login Screen)
+   ========================================================================== */
+
+.auth-page-container {
+    max-width: 360px;
+    margin: 3.5rem auto;
+    padding: 0 1rem;
+}
+
+.auth-card {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    background-color: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+}
+
+.auth-header {
+    margin-bottom: 1.75rem;
+}
+
+.auth-logo-badge {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.75rem auto;
+    border-radius: var(--radius-sm);
+    background: var(--ig-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(225, 48, 108, 0.3);
+}
+
+.auth-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-family: var(--font-display);
+    margin-bottom: 0.35rem;
+}
+
+.auth-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.auth-form {
+    text-align: left;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-xs);
+    background-color: var(--canvas-subtle);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.875rem;
+    margin-top: 0.35rem;
+    transition: border-color 0.15s ease;
+}
+
+.form-input:focus {
+    border-color: var(--hairline-focus);
+    background-color: var(--canvas);
+    outline: none;
+}
+
+.auth-footer-note {
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Footer (Instagram Minimalist Legal Footer)
+   ========================================================================== */
+
+.app-footer {
+    background-color: var(--canvas);
+    border-top: 1px solid var(--hairline);
+    padding: 1.5rem 1rem;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.disclaimer {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-divider {
+    color: var(--hairline);
+}

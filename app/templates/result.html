@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Report #{{ check.id }} — Reel Verifier{% endblock %}
+
+{% block content %}
+<div class="result-page-container">
+    <div class="result-page-nav">
+        <a href="{{ url_for('routes.history') }}" class="back-link">&larr; Back to History</a>
+        <span class="report-meta">Report #{{ check.id }} &bull; {{ check.created_at.strftime('%B %d, %Y at %H:%M UTC') }}</span>
+    </div>
+
+    <div class="card result-card">
+        <!-- Verdict Banner (Story Sticker Style) -->
+        <div class="verdict-banner">
+            <div class="verdict-badge-large badge-{{ check.verdict }}">
+                <span>{{ check.ui_verdict_label }}</span>
+            </div>
+            <div class="confidence-box">
+                <div class="confidence-label-row">
+                    <span class="confidence-title">Evidence Strength</span>
+                    <span class="confidence-value">{{ check.confidence }}%</span>
+                </div>
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill" style="width: {{ check.confidence }}%;"></div>
+                </div>
+                <span class="confidence-explanation">Strength of available official evidence, not a guarantee of authenticity.</span>
+            </div>
+        </div>
+
+        <!-- Plain-language summary -->
+        <div class="result-block">
+            <h2 class="block-title">Summary</h2>
+            <p class="summary-text">{{ verdict_data.get('summary', 'No summary provided.') }}</p>
+        </div>
+
+        <!-- Warning Signs & Red Flags (Instagram Advisory) -->
+        {% if verdict_data.get('red_flags') %}
+            <div class="result-block warning-block">
+                <h2 class="block-title text-danger">⚠️ Warning Signs &amp; Red Flags</h2>
+                <ul class="flags-list">
+                    {% for flag in verdict_data.get('red_flags') %}
+                        <li>{{ flag }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Actionable Advice -->
+        <div class="result-block advice-block">
+            <h2 class="block-title">💡 What You Should Do</h2>
+            <p class="advice-text">{{ verdict_data.get('advice', 'Always verify directly on the official company website.') }}</p>
+        </div>
+
+        <!-- Official Links (Link Sticker Style) -->
+        <div class="result-block">
+            <h2 class="block-title">🔗 Official Source Links</h2>
+            {% set links = verdict_data.get('official_links', []) %}
+            {% if links %}
+                <div class="links-list">
+                    {% for link in links %}
+                        {% if link.url and (link.url.startswith('http://') or link.url.startswith('https://')) %}
+                            <a href="{{ link.url }}" class="official-link-card" target="_blank" rel="noopener noreferrer">
+                                <div class="link-info">
+                                    <span class="link-title">{{ link.title or link.url }}</span>
+                                    <span class="link-url">{{ link.url }}</span>
+                                </div>
+                                <span class="external-icon" aria-hidden="true">&#8599;</span>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No verified official website links were confirmed in search grounding.</p>
+            {% endif %}
+        </div>
+
+        <!-- What we understood from the reel -->
+        <div class="result-block claim-details-block">
+            <details class="claim-accordion" open>
+                <summary class="accordion-header">
+                    <span>What We Understood From the Reel</span>
+                    <span class="accordion-arrow">▼</span>
+                </summary>
+                <div class="claim-grid">
+                    <div class="claim-field">
+                        <span class="field-label">Category</span>
+                        <span class="field-val">{{ (claim.get('category') or 'other') | replace('_', ' ') | title }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Company / Brand</span>
+                        <span class="field-val">{{ claim.get('brand_or_company') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Core Offer</span>
+                        <span class="field-val">{{ claim.get('offer') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Role or Item</span>
+                        <span class="field-val">{{ claim.get('role_or_item') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Location / Mode</span>
+                        <span class="field-val">{{ claim.get('location') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Eligibility</span>
+                        <span class="field-val">{{ claim.get('eligibility') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Deadline / Expiration</span>
+                        <span class="field-val">{{ claim.get('deadline') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Creator Handle</span>
+                        <span class="field-val">{{ claim.get('creator_handle') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Call to Action</span>
+                        <span class="field-val">{{ claim.get('call_to_action') or '—' }}</span>
+                    </div>
+                    <div class="claim-field">
+                        <span class="field-label">Link Shown in Media</span>
+                        <span class="field-val">{{ claim.get('link_shown') or '—' }}</span>
+                    </div>
+                </div>
+
+                {% if claim.get('urgency_or_pressure_phrases') %}
+                    <div class="claim-subblock">
+                        <span class="field-label">Urgency &amp; Pressure Phrases Detected:</span>
+                        <div class="tags-list">
+                            {% for phrase in claim.get('urgency_or_pressure_phrases') %}
+                                <span class="tag tag-warning">{{ phrase }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if claim.get('unclear') %}
+                    <div class="claim-subblock">
+                        <span class="field-label">Unclear or Ambiguous Elements:</span>
+                        <ul class="text-muted font-sm">
+                            {% for item in claim.get('unclear') %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </details>
+        </div>
+
+        <div class="result-footer-actions">
+            <a href="{{ url_for('routes.check_view') }}" class="btn-primary btn-sm">Verify Another Offer</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Reel — Reel Verifier{% endblock %}
+
+{% block content %}
+<div class="verify-page-container">
+    <div class="verify-header">
+        <h1 class="page-title">Verify an Offer or Reel</h1>
+        <p class="page-subtitle">
+            Upload reel screenshots or a downloaded video (up to 4 files), or paste the caption to check if the promotion is genuine.
+        </p>
+    </div>
+
+    <!-- Verification Input Card (Instagram 'Create Post' Style) -->
+    <section class="card upload-card" aria-labelledby="form-heading">
+        <h2 id="form-heading" class="sr-only">Upload and verification form</h2>
+        <form id="verify-form" enctype="multipart/form-data">
+            <!-- Instagram-Style Dropzone -->
+            <div class="dropzone" id="dropzone" tabindex="0" role="region" aria-label="Media file upload drop zone">
+                <input type="file" id="file-input" name="files" multiple accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm" class="file-input-hidden" aria-label="Select files to upload">
+                <div class="dropzone-content">
+                    <div class="dropzone-icon-camera" aria-hidden="true">📷</div>
+                    <span class="dropzone-primary">Drag photos and videos here</span>
+                    <span class="dropzone-secondary">
+                        <button type="button" class="btn-primary btn-sm" id="browse-btn">Select from computer</button>
+                    </span>
+                    <div class="dropzone-limits">
+                        <span>Max 4 files</span> &bull; 
+                        <span>Images &le; 5MB (JPEG, PNG, WebP, GIF)</span> &bull; 
+                        <span>Videos &le; 60MB / 120s (MP4, MOV, WebM)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client-side error banner -->
+            <div id="form-error" class="alert alert-error hidden" role="alert" aria-live="assertive"></div>
+
+            <!-- File Previews Container (9:16 Reel Carousel) -->
+            <div id="file-previews" class="previews-grid hidden" aria-label="Uploaded file previews"></div>
+
+            <!-- Caption / Context (Instagram Caption Box Style) -->
+            <div class="form-group">
+                <div class="label-row">
+                    <label for="caption-input" class="form-label">
+                        Post Caption or Extra Details <span class="label-optional">(optional)</span>
+                    </label>
+                    <span id="char-counter" class="char-counter" aria-live="polite">0 / 2000</span>
+                </div>
+                <textarea 
+                    id="caption-input" 
+                    name="caption" 
+                    rows="3" 
+                    maxlength="2000" 
+                    placeholder="Paste the reel caption, comments, discount code, or any extra details shown in the video..." 
+                    class="form-textarea"
+                ></textarea>
+            </div>
+
+            <!-- Submit Action -->
+            <div class="form-actions">
+                <button type="submit" id="submit-btn" class="btn-primary submit-btn">
+                    <span class="btn-text">Check this offer</span>
+                    <span class="btn-spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Loading State (Instagram Pulse) -->
+    <section id="loading-section" class="card loading-card hidden" aria-live="polite">
+        <div class="loading-spinner"></div>
+        <h2 class="loading-title" id="loading-status-text">Analyzing media...</h2>
+        <p class="loading-subtext">
+            Reading on-screen text, examining logos, and cross-referencing official company portals with Google Search grounding.
+        </p>
+        <div class="loading-steps">
+            <div class="loading-step active" id="step-1">1. Processing frames</div>
+            <div class="loading-step" id="step-2">2. Extracting claims</div>
+            <div class="loading-step" id="step-3">3. Grounding with Google Search</div>
+        </div>
+    </section>
+
+    <!-- Verification Result Section (Instagram Reel Fact-Check Report) -->
+    <section id="result-section" class="result-container hidden" aria-live="polite" aria-labelledby="result-heading">
+        <div class="result-header-row">
+            <h2 id="result-heading" class="section-title">Verification Report</h2>
+            <div id="result-cache-badge" class="badge-cached hidden">Cached Result</div>
+        </div>
+
+        <div class="card result-card">
+            <!-- Verdict Banner (Story Sticker Style) -->
+            <div class="verdict-banner" id="verdict-banner">
+                <div class="verdict-badge-large" id="verdict-label">Couldn't verify</div>
+                <div class="confidence-box">
+                    <div class="confidence-label-row">
+                        <span class="confidence-title">Evidence Strength</span>
+                        <span class="confidence-value" id="confidence-val">0%</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="confidence-bar" style="width: 0%;"></div>
+                    </div>
+                    <span class="confidence-explanation">Strength of available official evidence, not a guarantee of authenticity.</span>
+                </div>
+            </div>
+
+            <!-- Plain-language summary -->
+            <div class="result-block">
+                <h3 class="block-title">Summary</h3>
+                <p class="summary-text" id="result-summary"></p>
+            </div>
+
+            <!-- Red Flags & Warnings (Instagram Advisory Style) -->
+            <div class="result-block warning-block hidden" id="red-flags-block">
+                <h3 class="block-title text-danger">⚠️ Warning Signs &amp; Red Flags</h3>
+                <ul class="flags-list" id="red-flags-list"></ul>
+            </div>
+
+            <!-- Actionable Advice -->
+            <div class="result-block advice-block" id="advice-block">
+                <h3 class="block-title">💡 What You Should Do</h3>
+                <p class="advice-text" id="result-advice"></p>
+            </div>
+
+            <!-- Official Links (Link Sticker Style) -->
+            <div class="result-block" id="official-links-block">
+                <h3 class="block-title">🔗 Official Source Links</h3>
+                <div id="links-container" class="links-list"></div>
+                <p id="no-links-msg" class="text-muted hidden">No verified official website links were confirmed in search grounding.</p>
+            </div>
+
+            <!-- What we understood from the reel -->
+            <div class="result-block claim-details-block">
+                <details class="claim-accordion" open>
+                    <summary class="accordion-header">
+                        <span>What We Understood From the Reel</span>
+                        <span class="accordion-arrow">▼</span>
+                    </summary>
+                    <div class="claim-grid" id="claim-fields-grid">
+                        <div class="claim-field">
+                            <span class="field-label">Category</span>
+                            <span class="field-val" id="claim-category">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Company / Brand</span>
+                            <span class="field-val" id="claim-brand">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Core Offer</span>
+                            <span class="field-val" id="claim-offer">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Role or Item</span>
+                            <span class="field-val" id="claim-role">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Location / Mode</span>
+                            <span class="field-val" id="claim-location">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Eligibility</span>
+                            <span class="field-val" id="claim-eligibility">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Deadline / Expiration</span>
+                            <span class="field-val" id="claim-deadline">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Creator Handle</span>
+                            <span class="field-val" id="claim-creator">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Call to Action</span>
+                            <span class="field-val" id="claim-cta">—</span>
+                        </div>
+                        <div class="claim-field">
+                            <span class="field-label">Link Shown in Media</span>
+                            <span class="field-val" id="claim-link-shown">—</span>
+                        </div>
+                    </div>
+
+                    <div id="claim-urgency-wrapper" class="claim-subblock hidden">
+                        <span class="field-label">Urgency &amp; Pressure Phrases Detected:</span>
+                        <div class="tags-list" id="claim-urgency-tags"></div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Footer actions -->
+            <div class="result-footer-actions">
+                <a href="#" id="view-saved-link" class="btn-secondary btn-sm" target="_blank" rel="noopener noreferrer">View Stored Report</a>
+                <button type="button" id="check-another-btn" class="btn-primary btn-sm">Verify Another Offer</button>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

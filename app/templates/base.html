@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Reel Verifier — AI Social Media Claim Verification{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Header (Instagram Style) -->
+    <header class="app-header">
+        <div class="header-container">
+            <a href="{% if current_user %}{{ url_for('routes.check_view') }}{% else %}{{ url_for('routes.landing') }}{% endif %}" class="brand-logo" aria-label="Reel Verifier Home">
+                <div class="logo-reel-badge" aria-hidden="true">
+                    <span>🎬</span>
+                </div>
+                <span>Reel<span class="logo-gradient-text">Verifier</span></span>
+            </a>
+
+            <nav class="nav-actions">
+                {% if current_user %}
+                    <a href="{{ url_for('routes.check_view') }}" class="nav-link {% if request.endpoint == 'routes.check_view' %}active{% endif %}">
+                        <span class="nav-icon" aria-hidden="true">✦</span>
+                        <span>Verify</span>
+                    </a>
+                    <a href="{{ url_for('routes.history') }}" class="nav-link {% if request.endpoint == 'routes.history' %}active{% endif %}">
+                        <span class="nav-icon" aria-hidden="true">🕒</span>
+                        <span>History</span>
+                    </a>
+                    <div class="user-profile">
+                        <div class="story-avatar-wrapper">
+                            {% if current_user.picture %}
+                                <img src="{{ current_user.picture }}" alt="{{ current_user.name or 'User' }}" class="user-avatar" referrerpolicy="no-referrer">
+                            {% else %}
+                                <div class="user-avatar-placeholder" aria-hidden="true">
+                                    {{ (current_user.name or current_user.email or 'U')[0] | upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <span class="user-name">{{ current_user.name or current_user.email }}</span>
+                    </div>
+                    <a href="{{ url_for('auth.logout') }}" class="btn-secondary btn-sm" role="button">Sign out</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn-primary btn-sm" role="button">
+                        <span>Sign in</span>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Flash message alerts -->
+    <div class="flash-messages-container" aria-live="polite">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span class="alert-text">{{ message }}</span>
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove()" aria-label="Close notification">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if error_message %}
+            <div class="alert alert-error">
+                <span class="alert-text">{{ error_message }}</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p class="disclaimer">
+                <strong>Disclaimer:</strong> Results are based on public web information and can be wrong. Couldn't verify does not mean fake. Always apply through the official website and never pay to apply.
+            </p>
+            <div class="footer-meta">
+                <span>&copy; {{ 2026 }} Reel Verifier</span>
+                <span class="footer-divider">&bull;</span>
+                <span>Powered by Gemini &amp; Open-Source Vision Models</span>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

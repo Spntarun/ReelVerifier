@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Verification History — Reel Verifier{% endblock %}
+
+{% block content %}
+<div class="history-page-container">
+    <div class="history-header">
+        <div>
+            <h1 class="page-title">Verification History</h1>
+            <p class="page-subtitle">Past reels and claims fact-checked from your account.</p>
+        </div>
+        <a href="{{ url_for('routes.check_view') }}" class="btn-primary btn-sm">+ Check New Reel</a>
+    </div>
+
+    {% if checks %}
+        <div class="card history-card">
+            <div class="table-responsive">
+                <table class="history-table" aria-label="Past verification records">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date (UTC)</th>
+                            <th scope="col">Company / Brand</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Verdict</th>
+                            <th scope="col">Confidence</th>
+                            <th scope="col" class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in checks %}
+                            {% set claim = item.get_claim() %}
+                            <tr>
+                                <td class="text-muted text-nowrap">
+                                    {{ item.created_at.strftime('%b %d, %Y') }}
+                                </td>
+                                <td class="font-semibold">
+                                    {{ claim.get('brand_or_company') or '—' }}
+                                </td>
+                                <td>
+                                    <span class="category-tag">{{ (claim.get('category') or 'other') | replace('_', ' ') | title }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ item.ui_badge_class }}">
+                                        {{ item.ui_verdict_label }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="history-conf-wrapper">
+                                        <div class="mini-bar-track">
+                                            <div class="mini-bar-fill" style="width: {{ item.confidence }}%;"></div>
+                                        </div>
+                                        <span class="conf-text">{{ item.confidence }}%</span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <a href="{{ url_for('routes.result_detail', check_id=item.id) }}" class="btn-secondary btn-xs" aria-label="View report for {{ claim.get('brand_or_company') or 'check' }}">
+                                        View Report &rarr;
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="card empty-state-card">
+            <div class="empty-state-icon" aria-hidden="true">🎬</div>
+            <h2 class="empty-state-title">No verifications yet</h2>
+            <p class="empty-state-text">
+                You haven't submitted any reels or screenshots for verification yet.
+            </p>
+            <a href="{{ url_for('routes.check_view') }}" class="btn-primary btn-sm">Verify your first reel</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

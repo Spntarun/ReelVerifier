@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Reel Verifier — Verify Instagram Reels, Offers & Claims in Seconds{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-container">
+        <!-- Instagram Story Ring Icon -->
+        <div class="hero-story-ring" aria-hidden="true">
+            <div class="hero-story-inner">
+                <span>🎬</span>
+            </div>
+        </div>
+
+        <h1 class="hero-title">
+            Verify Instagram Reels, Offers, and Claims in Seconds.
+        </h1>
+
+        <p class="hero-subtitle">
+            Instantly fact-check job listings, scholarships, free courses, giveaways, and viral promotions using AI and live Google Search grounding.
+        </p>
+
+        <!-- Instagram-style Simple Email Sign-In -->
+        <div class="hero-cta">
+            <form method="POST" action="{{ url_for('auth.login') }}" class="hero-email-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="email-input-group">
+                    <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="Enter your email to start..." 
+                        required 
+                        autocomplete="email"
+                        class="hero-email-input"
+                    >
+                    <button type="submit" class="btn-primary btn-sm hero-submit-btn">
+                        <span>Start Verifying &rarr;</span>
+                    </button>
+                </div>
+            </form>
+            <span class="cta-microcopy">Free to use &bull; No password required &bull; 10 checks/day</span>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Showcase -->
+<section class="features-section">
+    <div class="features-container">
+        <h2 class="section-title">How Reel Verifier Protects You</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-badge" aria-hidden="true">👁️</div>
+                <h3 class="feature-title">VLM Visual Analysis</h3>
+                <p class="feature-desc">
+                    Scans reel video frames, subtitles, company logos, and hidden fine print in chronological order.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-badge" aria-hidden="true">🌐</div>
+                <h3 class="feature-title">Google Search Grounding</h3>
+                <p class="feature-desc">
+                    Gemini cross-references claims in real time against official career portals, press releases, and .gov domains.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-badge" aria-hidden="true">🛡️</div>
+                <h3 class="feature-title">Red Flag Detection</h3>
+                <p class="feature-desc">
+                    Flags inflated salary claims, mismatched domains, false urgency ("2 hours left!"), and fee requests.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Example Categories (Story Highlights style) -->
+<section class="usecases-section">
+    <div class="usecases-container">
+        <h2 class="section-title">What You Can Fact-Check</h2>
+        <div class="pill-cloud">
+            <span class="category-pill">💼 Hiring &amp; Remote Jobs</span>
+            <span class="category-pill">🎓 Scholarships &amp; Grants</span>
+            <span class="category-pill">📚 Free Certification Courses</span>
+            <span class="category-pill">🎁 Giveaways &amp; Cash Prizes</span>
+            <span class="category-pill">🏷️ Coupon Codes &amp; Discounts</span>
+            <span class="category-pill">🤖 AI Tools &amp; Lifetime Deals</span>
+            <span class="category-pill">📱 Product Offers</span>
+        </div>
+    </div>
+</section>
+{% endblock %}
